@@ -327,31 +327,22 @@ function showServices($chatId, $clientId, $botToken, $conn) {
  * Show knowledgebase articles
  */
 function showKnowledgebase($chatId, $clientId, $botToken, $conn) {
-    // Get all knowledgebase categories and articles
-    $result = $conn->query("
-        SELECT kba.id, kba.title, kba.article, kbc.name as category 
-        FROM tblkbarticles kba
-        JOIN tblkbcategories kbc ON kba.category = kbc.id
-        WHERE kbc.hidden = 0
-        ORDER BY kbc.displayorder, kba.displayorder
-        LIMIT 10
-    ");
+    // Try simple query first - no join, no where
+    $result = $conn->query("SELECT id, title FROM tblkbarticles ORDER BY id DESC LIMIT 10");
     
     $text = "📚 *Knowledgebase*\n\n";
     $keyboard = array();
     
     if (!$result) {
-        // Debug: show error
-        $text .= "Error loading KB: " . $conn->error;
+        $text .= "DB Error: " . $conn->error;
     } elseif ($result->num_rows === 0) {
-        $text .= "No articles available.";
+        $text .= "No articles found.";
     } else {
-        $text .= "Available articles:\n\n";
+        $text .= "Articles:\n\n";
         while ($row = $result->fetch_assoc()) {
             $title = html_entity_decode($row['title'], ENT_QUOTES, 'UTF-8');
-            $text .= "📄 *{$title}*\n";
-            $text .= "   Category: {$row['category']}\n\n";
-            $keyboard[] = array(array('text' => '📖 ' . substr($title, 0, 30), 'callback_data' => 'kb_' . $row['id']));
+            $text .= "📄 {$title}\n";
+            $keyboard[] = array(array('text' => substr($title, 0, 25), 'callback_data' => 'kb_' . $row['id']));
         }
     }
     
@@ -365,24 +356,24 @@ function showKnowledgebase($chatId, $clientId, $botToken, $conn) {
 function showKnowledgebaseArticle($chatId, $articleId, $botToken, $conn) {
     $result = $conn->query("SELECT id, title, article FROM tblkbarticles WHERE id = " . (int)$articleId);
     
-    if ($row = $result->fetch_assoc()) {
+    if (!$result) {
+        $text = "Error: " . $conn->error;
+    } elseif ($row = $result->fetch_assoc()) {
         $title = html_entity_decode($row['title'], ENT_QUOTES, 'UTF-8');
         $article = strip_tags(html_entity_decode($row['article'], ENT_QUOTES, 'UTF-8'));
-        // Truncate if too long for Telegram
         if (strlen($article) > 1000) {
             $article = substr($article, 0, 997) . '...';
         }
-        
-        $text = "📖 *{$title}*\n\n" . $article;
+        $text = "{$title}\n\n" . $article;
     } else {
-        $text = "Article not found.";
+        $text = "Not found.";
     }
     
     $keyboard = array(
-        array(array('text' => '🔙 Back to KB', 'callback_data' => 'kb'))
+        array(array('text' => '🔙 Back', 'callback_data' => 'kb'))
     );
     
-    sendKeyboard($chatId, $text, $keyboard, $botToken, true);
+    sendKeyboard($chatId, $text, $keyboard, $botToken);
 }
 
 /**
