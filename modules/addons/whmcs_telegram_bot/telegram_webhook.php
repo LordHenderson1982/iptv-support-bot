@@ -215,7 +215,6 @@ function showMainMenu($chatId, $clientId, $botToken, $conn) {
         array(array('text' => '💰 Balance', 'callback_data' => 'bal')),
         array(array('text' => '📄 Invoices', 'callback_data' => 'inv')),
         array(array('text' => '🖥️ Services', 'callback_data' => 'srv')),
-        array(array('text' => '📚 Knowledgebase', 'callback_data' => 'kb')),
         array(array('text' => '❌ Unlink', 'callback_data' => 'unl'))
     );
     
@@ -422,10 +421,7 @@ function handleCallbackQuery($callback, $botToken, $conn) {
             showServices($chatId, $clientId, $botToken, $conn);
             break;
             
-        case 'kb':
-        case 'knowledgebase':
-            showKnowledgebase($chatId, $clientId, $botToken, $conn);
-            break;
+
             
         case 'unl':
         case 'unlink':
