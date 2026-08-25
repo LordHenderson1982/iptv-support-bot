@@ -265,12 +265,8 @@ function showInvoices($chatId, $clientId, $botToken, $conn) {
     } else {
         while ($row = $result->fetch_assoc()) {
             $status = $row['status'];
-            $statusIcon = match($status) {
-                'Paid' => '✅',
-                'Pending' => '⏳',
-                'Overdue' => '⚠️',
-                default => '📄'
-            };
+            $statusIcons = array('Paid' => '✅', 'Pending' => '⏳', 'Overdue' => '⚠️');
+            $statusIcon = isset($statusIcons[$status]) ? $statusIcons[$status] : '📄';
             
             $amount = formatCurrency($row['total'], 1, $conn); // Default currency
             $text .= "{$statusIcon} *Invoice #{$row['invoicenum']}*\n";
