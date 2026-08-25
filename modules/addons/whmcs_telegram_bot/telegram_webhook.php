@@ -247,8 +247,44 @@ function showBalance($chatId, $clientId, $botToken, $conn) {
  * Show invoices
  */
 function showInvoices($chatId, $clientId, $botToken, $conn) {
-    // Simple test - just send text
-    sendMessage($chatId, "📄 Loading invoices...", $botToken);
+    $stmt = $conn->prepare("
+        SELECT id, invoicenum, date, duedate, total, status, paymentmethod
+        FROM tblinvoices 
+        WHERE userid = ? 
+        ORDER BY id DESC LIMIT 10
+    ");
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $text = "📄 *Your Invoices*\n\n";
+    $keyboard = array();
+    
+    if ($result->num_rows === 0) {
+        $text .= "No invoices found.";
+    } else {
+        while ($row = $result->fetch_assoc()) {
+            $status = $row['status'];
+            $statusIcon = match($status) {
+                'Paid' => '✅',
+                'Pending' => '⏳',
+                'Overdue' => '⚠️',
+                default => '📄'
+            };
+            
+            $amount = formatCurrency($row['total'], 1, $conn); // Default currency
+            $text .= "{$statusIcon} *Invoice #{$row['invoicenum']}*\n";
+            $text .= "   Amount: {$amount}\n";
+            $text .= "   Due: {$row['duedate']}\n";
+            $text .= "   Status: {$status}\n\n";
+            
+            // Add button to view invoice details
+            $keyboard[] = array(array('text' => '📄 #' . $row['invoicenum'], 'callback_data' => 'inv_' . $row['id']));
+        }
+    }
+    
+    $keyboard[] = array(array('text' => '🔙 Back', 'callback_data' => 'back'));
+    sendKeyboard($chatId, $text, $keyboard, $botToken, true);
 }
 
 /**
@@ -364,29 +400,110 @@ function handleCallbackQuery($callback, $botToken, $conn) {
     $chatId = $callback['message']['chat']['id'];
     $data = $callback['data'] ?? '';
     
-    // Instant answer to stop loading
-    file_get_contents("https://api.telegram.org/bot{$botToken}/answerCallbackQuery?callback_query_id=" . $callbackId);
+    // Instant answer to stop loading animation
+    $url = "https://api.telegram.org/bot{$botToken}/answerCallbackQuery";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, array('callback_query_id' => $callbackId));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
     
     $clientId = getLinkedClient($userId, $conn);
     if (!$clientId) {
-        file_get_contents("https://api.telegram.org/bot{$botToken}/sendMessage?chat_id={$chatId}&text=Please+link+first");
+        sendMessage($chatId, "Please link your account first.", $botToken);
         return;
     }
     
-    // Very simple routing
-    if (strpos($data, 'inv') !== false || strpos($data, 'invoices') !== false) {
-        file_get_contents("https://api.telegram.org/bot{$botToken}/sendMessage?chat_id={$chatId}&text=Invoices+works");
-    } elseif (strpos($data, 'bal') !== false || strpos($data, 'balance') !== false) {
-        file_get_contents("https://api.telegram.org/bot{$botToken}/sendMessage?chat_id={$chatId}&text=Balance+works");
-    } elseif (strpos($data, 'srv') !== false || strpos($data, 'services') !== false) {
-        file_get_contents("https://api.telegram.org/bot{$botToken}/sendMessage?chat_id={$chatId}&text=Services+works");
-    } elseif (strpos($data, 'kb') !== false || strpos($data, 'knowledge') !== false) {
-        file_get_contents("https://api.telegram.org/bot{$botToken}/sendMessage?chat_id={$chatId}&text=KB+works");
-    } elseif (strpos($data, 'back') !== false) {
-        showMainMenu($chatId, $clientId, $botToken, $conn);
-    } else {
-        file_get_contents("https://api.telegram.org/bot{$botToken}/sendMessage?chat_id={$chatId}&text=Got:+" . urlencode($data));
+    // Debug logging
+    error_log("DEBUG callback data: [$data]");
+    
+    // Exact match routing - switch is cleaner than strpos
+    switch ($data) {
+        case 'bal':
+        case 'balance':
+            showBalance($chatId, $clientId, $botToken, $conn);
+            break;
+            
+        case 'inv':
+        case 'invoices':
+        case 'invoice':
+            showInvoices($chatId, $clientId, $botToken, $conn);
+            break;
+            
+        case 'srv':
+        case 'services':
+        case 'service':
+            showServices($chatId, $clientId, $botToken, $conn);
+            break;
+            
+        case 'kb':
+        case 'knowledgebase':
+            showKnowledgebase($chatId, $clientId, $botToken, $conn);
+            break;
+            
+        case 'unl':
+        case 'unlink':
+            unlinkAccount($chatId, $userId, $botToken, $conn);
+            break;
+            
+        case 'back':
+            showMainMenu($chatId, $clientId, $botToken, $conn);
+            break;
+            
+        default:
+            // Check for KB article buttons (kb_123)
+            if (strpos($data, 'kb_') === 0) {
+                $articleId = (int)str_replace('kb_', '', $data);
+                showKnowledgebaseArticle($chatId, $articleId, $botToken, $conn);
+            }
+            // Check for invoice detail buttons (inv_123)
+            elseif (strpos($data, 'inv_') === 0) {
+                $invoiceId = (int)str_replace('inv_', '', $data);
+                showInvoiceDetail($chatId, $invoiceId, $botToken, $conn);
+            } else {
+                error_log("DEBUG unmatched callback: [$data]");
+                sendMessage($chatId, "Received: " . $data, $botToken);
+            }
     }
+}
+
+/**
+ * Show invoice detail
+ */
+function showInvoiceDetail($chatId, $invoiceId, $botToken, $conn) {
+    $stmt = $conn->prepare("
+        SELECT id, invoicenum, date, duedate, total, status, paymentmethod, notes
+        FROM tblinvoices 
+        WHERE id = ?
+    ");
+    $stmt->bind_param("i", $invoiceId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $amount = formatCurrency($row['total'], 1, $conn);
+        $status = $row['status'];
+        
+        $text = "📄 *Invoice #{$row['invoicenum']}*\n\n";
+        $text .= "Date: {$row['date']}\n";
+        $text .= "Due: {$row['duedate']}\n";
+        $text .= "Amount: *{$amount}*\n";
+        $text .= "Status: *{$status}*\n";
+        $text .= "Payment: {$row['paymentmethod']}\n";
+        
+        if (!empty($row['notes'])) {
+            $text .= "\nNotes: " . strip_tags($row['notes']);
+        }
+    } else {
+        $text = "Invoice not found.";
+    }
+    
+    $keyboard = array(
+        array(array('text' => '🔙 Back to Invoices', 'callback_data' => 'inv'))
+    );
+    
+    sendKeyboard($chatId, $text, $keyboard, $botToken, true);
 }
 
 /**
