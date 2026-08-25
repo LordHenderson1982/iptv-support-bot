@@ -328,7 +328,7 @@ function showServices($chatId, $clientId, $botToken, $conn) {
  */
 function showKnowledgebase($chatId, $clientId, $botToken, $conn) {
     // Get all knowledgebase categories and articles
-    $stmt = $conn->prepare("
+    $result = $conn->query("
         SELECT kba.id, kba.title, kba.article, kbc.name as category 
         FROM tblkbarticles kba
         JOIN tblkbcategories kbc ON kba.category = kbc.id
@@ -336,13 +336,14 @@ function showKnowledgebase($chatId, $clientId, $botToken, $conn) {
         ORDER BY kbc.displayorder, kba.displayorder
         LIMIT 10
     ");
-    $stmt->execute();
-    $result = $stmt->get_result();
     
     $text = "📚 *Knowledgebase*\n\n";
     $keyboard = array();
     
-    if ($result->num_rows === 0) {
+    if (!$result) {
+        // Debug: show error
+        $text .= "Error loading KB: " . $conn->error;
+    } elseif ($result->num_rows === 0) {
         $text .= "No articles available.";
     } else {
         $text .= "Available articles:\n\n";
@@ -362,10 +363,7 @@ function showKnowledgebase($chatId, $clientId, $botToken, $conn) {
  * Show a specific knowledgebase article
  */
 function showKnowledgebaseArticle($chatId, $articleId, $botToken, $conn) {
-    $stmt = $conn->prepare("SELECT id, title, article FROM tblkbarticles WHERE id = ?");
-    $stmt->bind_param("i", $articleId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $conn->query("SELECT id, title, article FROM tblkbarticles WHERE id = " . (int)$articleId);
     
     if ($row = $result->fetch_assoc()) {
         $title = html_entity_decode($row['title'], ENT_QUOTES, 'UTF-8');
@@ -381,7 +379,7 @@ function showKnowledgebaseArticle($chatId, $articleId, $botToken, $conn) {
     }
     
     $keyboard = array(
-        array(array('text' => '🔙 Back to KB', 'callback_data' => 'knowledgebase'))
+        array(array('text' => '🔙 Back to KB', 'callback_data' => 'kb'))
     );
     
     sendKeyboard($chatId, $text, $keyboard, $botToken, true);
