@@ -10,7 +10,7 @@ return array(
     // ============================================
     'attention' => array(
         'title' => '🤖 Bot Commands',
-        'keywords' => array('how do i use the bot', 'how does this work', 'what can you do', 'bot commands', 'bot menu', 'show menu', 'hey bot', 'hello bot', 'need help'),
+        'keywords' => array('help', 'bot', 'hi', 'hello', 'hey', 'how do i use the bot', 'how does this work', 'what can you do', 'bot commands', 'bot menu', 'show menu', 'hey bot', 'hello bot', 'need help', 'start'),
         'answer' => "🤖 *Bot Commands*\n\nAsk me about:\n• How to pay\n• Login issues\n• Buffering problems\n• Channel issues\n• Setup help\n• Refunds\n• And more!\n\nJust describe your issue and I'll help!"
     ),
     
