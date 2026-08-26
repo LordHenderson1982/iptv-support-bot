@@ -49,8 +49,8 @@ if (isset($update['message'])) {
         sendMessage($chatId, $answer, $botToken);
     }
     
-    // Check for /menu command anywhere
-    if ($text === '/menu') {
+    // Check for /menu command or 'help' keyword anywhere
+    if ($text === '/menu' || $text === 'help' || $text === 'hey' || $text === 'hi') {
         showMainMenu($chatId, $botToken);
     }
 }
