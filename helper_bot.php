@@ -42,13 +42,11 @@ if (isset($update['message'])) {
         exit;
     }
     
-    // Only respond in groups
-    if ($chatId < 0) {
-        // Check for keyword matches in group
-        $answer = findBestAnswer($text, $faq);
-        if ($answer) {
-            sendMessage($chatId, $answer, $botToken);
-        }
+    // Respond in both groups and DMs
+    // Check for keyword matches
+    $answer = findBestAnswer($text, $faq);
+    if ($answer) {
+        sendMessage($chatId, $answer, $botToken);
     }
     
     // Check for /menu command anywhere
