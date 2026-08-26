@@ -12,7 +12,7 @@
  * 4. Edit faq.php to add your questions/answers
  */
 
-$botToken = 'YOUR_BOT_TOKEN_HERE'; // Replace with your bot token
+$botToken = '8948021349:AAH61h2ZzEVwCF90d6wpBj-slHXRc2e7jPc'; // Replace with your bot token
 $adminId = '572118258'; // Your Telegram ID for admin alerts
 
 // Load FAQ data
