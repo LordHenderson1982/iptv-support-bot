@@ -3,6 +3,7 @@
  * IPTV Support Helper Bot
  * 
  * Lives in your Telegram group, answers common questions
+ * Uses button menus for easy navigation
  * 
  * Setup:
  * 1. Create bot via @BotFather
@@ -13,7 +14,6 @@
 
 $botToken = 'YOUR_BOT_TOKEN_HERE'; // Replace with your bot token
 $adminId = '572118258'; // Your Telegram ID for admin alerts
-$groupId = '-100XXXXXXXXX'; // Your group chat ID
 
 // Load FAQ data
 $faq = include 'faq.php';
@@ -35,26 +35,87 @@ if (isset($update['callback_query'])) {
 if (isset($update['message'])) {
     $msg = $update['message'];
     $chatId = $msg['chat']['id'];
-    $userId = $msg['from']['id'];
     $text = $msg['text'] ?? '';
-    $firstName = $msg['from']['first_name'] ?? '';
     
-    // Only respond in group chats
-    if ($chatId != $groupId) {
+    // Ignore bot commands
+    if (strpos($text, '/') === 0) {
         exit;
     }
     
-    // Check if bot was mentioned or it's a reply to bot
-    $isReply = isset($msg['reply_to_message']) && ($msg['reply_to_message']['from']['is_bot'] ?? false);
-    $mentioned = isset($msg['entities']) ? array_filter($msg['entities'], function($e) { return $e['type'] === 'mention'; }) : [];
-    
-    // Respond to questions
-    if (!empty($text) && ($isReply || !empty($mentioned) || strpos(strtolower($text), 'help') !== false || strpos(strtolower($text), '?') !== false)) {
+    // Only respond in groups
+    if ($chatId < 0) {
+        // Check for keyword matches in group
         $answer = findBestAnswer($text, $faq);
         if ($answer) {
             sendMessage($chatId, $answer, $botToken);
         }
     }
+    
+    // Check for /menu command anywhere
+    if ($text === '/menu') {
+        showMainMenu($chatId, $botToken);
+    }
+}
+
+/**
+ * Show main menu with categories
+ */
+function showMainMenu($chatId, $botToken) {
+    $text = "📚 *How can I help?*\n\nChoose a category:";
+    
+    $keyboard = array(
+        // Row 1: Payment
+        array(
+            array('text' => '💳 How to Pay', 'callback_data' => 'cat_payment'),
+            array('text' => '💰 Add Funds', 'callback_data' => 'cat_addfunds')
+        ),
+        // Row 2: Setup
+        array(
+            array('text' => '📱 Firestick', 'callback_data' => 'cat_firestick'),
+            array('text' => '📱 Android TV', 'callback_data' => 'cat_android')
+        ),
+        // Row 3: URLs
+        array(
+            array('text' => '📋 M3U List', 'callback_data' => 'cat_m3u'),
+            array('text' => '🔮 Portal URL', 'callback_data' => 'cat_portal')
+        ),
+        // Row 4: Problems
+        array(
+            array('text' => '🛑 Buffering', 'callback_data' => 'cat_buffering'),
+            array('text' => '📡 Channels Down', 'callback_data' => 'cat_channels')
+        ),
+        // Row 5: Account
+        array(
+            array('text' => '🔄 Renew', 'callback_data' => 'cat_renew'),
+            array('text' => '🔐 Login Issues', 'callback_data' => 'cat_login')
+        ),
+        // Row 6: Support
+        array(
+            array('text' => '📞 Contact Support', 'callback_data' => 'cat_support')
+        )
+    );
+    
+    sendKeyboard($chatId, $text, $keyboard, $botToken);
+}
+
+/**
+ * Show FAQ article
+ */
+function showArticle($chatId, $articleKey, $botToken, $faq) {
+    if (!isset($faq[$articleKey])) {
+        sendMessage($chatId, "Article not found.", $botToken);
+        return;
+    }
+    
+    $article = $faq[$articleKey];
+    
+    $text = $article['answer'];
+    
+    $keyboard = array(
+        array(array('text' => '🔙 Back to Menu', 'callback_data' => 'menu'))
+    );
+    
+    sendKeyboard($chatId, $text, $keyboard, $botToken, true);
 }
 
 /**
@@ -65,7 +126,7 @@ function findBestAnswer($text, $faq) {
     $bestMatch = null;
     $bestScore = 0;
     
-    foreach ($faq as $item) {
+    foreach ($faq as $key => $item) {
         $score = 0;
         foreach ($item['keywords'] as $keyword) {
             if (strpos($text, strtolower($keyword)) !== false) {
@@ -83,13 +144,14 @@ function findBestAnswer($text, $faq) {
 }
 
 /**
- * Handle callback queries
+ * Handle callback queries (button presses)
  */
 function handleCallback($callback, $botToken, $faq) {
     $callbackId = $callback['id'];
+    $chatId = $callback['message']['chat']['id'];
     $data = $callback['data'] ?? '';
     
-    // Answer immediately
+    // Answer immediately to stop loading
     $url = "https://api.telegram.org/bot{$botToken}/answerCallbackQuery";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -97,62 +159,33 @@ function handleCallback($callback, $botToken, $faq) {
     curl_exec($ch);
     curl_close($ch);
     
-    // Handle category selection
-    if (strpos($data, 'cat_') === 0) {
-        $catId = str_replace('cat_', '', $data);
-        showCategory($callback['message']['chat']['id'], $catId, $callback['from']['id'], $botToken, $faq);
-    } elseif ($data === 'main_menu') {
-        showMainMenu($callback['message']['chat']['id'], $callback['from']['id'], $botToken, $faq);
-    }
-}
-
-/**
- * Show main menu
- */
-function showMainMenu($chatId, $userId, $botToken, $faq) {
-    // Group categories by section
-    $categories = array(
-        'payment' => array('icon' => '💳', 'name' => 'Payments', 'keywords' => array('pay', 'bitcoin', 'paypal', 'cashapp', 'venmo', 'buy', 'credit')),
-        'setup' => array('icon' => '📱', 'name' => 'Setup', 'keywords' => array('setup', 'install', 'how to', 'm3u', 'portal', 'login', 'app')),
-        'issues' => array('icon' => '🔧', 'name' => 'Problems', 'keywords' => array('buffer', 'not working', 'error', 'slow', 'down', 'offline')),
-        'account' => array('icon' => '👤', 'name' => 'Account', 'keywords' => array('account', 'login', 'password', 'renew', 'cancel')),
-    );
-    
-    $text = "📚 *How can I help?*\n\n";
-    foreach ($categories as $key => $cat) {
-        $text .= "{$cat['icon']} {$cat['name']}\n";
-    }
-    
-    $keyboard = array();
-    foreach (array_keys($categories) as $i => $catKey) {
-        $keyboard[] = array(array('text' => $categories[$catKey]['icon'] . ' ' . $categories[$catKey]['name'], 'callback_data' => 'cat_' . $catKey));
-    }
-    
-    sendKeyboard($chatId, $text, $keyboard, $botToken);
-}
-
-/**
- * Show category
- */
-function showCategory($chatId, $catKey, $userId, $botToken, $faq) {
-    $catAnswers = array_filter($faq, function($item) use ($catKey) {
-        return $item['category'] === $catKey;
-    });
-    
-    if (empty($catAnswers)) {
-        sendMessage($chatId, "No articles in this category yet.", $botToken);
+    // Main menu
+    if ($data === 'menu' || $data === 'main_menu') {
+        showMainMenu($chatId, $botToken);
         return;
     }
     
-    $text = "📖 *Articles:*\n\n";
-    $keyboard = array();
+    // Category/article buttons
+    $articleMap = array(
+        'cat_payment' => 'how_to_pay',
+        'cat_addfunds' => 'add_funds',
+        'cat_firestick' => 'firestick',
+        'cat_android' => 'android',
+        'cat_m3u' => 'm3u',
+        'cat_portal' => 'portal',
+        'cat_buffering' => 'buffering',
+        'cat_channels' => 'channels_not_working',
+        'cat_no_streams' => 'no_streams',
+        'cat_renew' => 'renew',
+        'cat_login' => 'login_issue',
+        'cat_password' => 'reset_password',
+        'cat_details' => 'login_details',
+        'cat_support' => 'contact_support',
+    );
     
-    foreach ($catAnswers as $article) {
-        $text .= "📄 *{$article['title']}*\n{$article['preview']}\n\n";
+    if (isset($articleMap[$data])) {
+        showArticle($chatId, $articleMap[$data], $botToken, $faq);
     }
-    
-    $keyboard[] = array(array('text' => '🔙 Back to Menu', 'callback_data' => 'main_menu'));
-    sendKeyboard($chatId, $text, $keyboard, $botToken, true);
 }
 
 /**
