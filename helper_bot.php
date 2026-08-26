@@ -59,41 +59,22 @@ if (isset($update['message'])) {
  * Show main menu with categories
  */
 function showMainMenu($chatId, $botToken) {
-    $text = "📚 *How can I help?*\n\nChoose a category:";
+    // Text menu (simpler, more reliable)
+    $text = "📚 *How can I help?*\n\n" .
+        "💳 *How to Pay* - say 'how to pay'\n" .
+        "💰 *Add Funds* - say 'add funds'\n" .
+        "📱 *Firestick* - say 'firestick'\n" .
+        "📱 *Android* - say 'android'\n" .
+        "📋 *M3U List* - say 'm3u'\n" .
+        "🔮 *Portal* - say 'portal'\n" .
+        "🛑 *Buffering* - say 'buffering'\n" .
+        "📡 *Channels* - say 'channels down'\n" .
+        "🔄 *Renew* - say 'renew'\n" .
+        "🔐 *Login* - say 'login'\n" .
+        "📞 *Support* - say 'support'\n\n" .
+        "Just ask me about any of these!";
     
-    $keyboard = array(
-        // Row 1: Payment
-        array(
-            array('text' => '💳 How to Pay', 'callback_data' => 'cat_payment'),
-            array('text' => '💰 Add Funds', 'callback_data' => 'cat_addfunds')
-        ),
-        // Row 2: Setup
-        array(
-            array('text' => '📱 Firestick', 'callback_data' => 'cat_firestick'),
-            array('text' => '📱 Android TV', 'callback_data' => 'cat_android')
-        ),
-        // Row 3: URLs
-        array(
-            array('text' => '📋 M3U List', 'callback_data' => 'cat_m3u'),
-            array('text' => '🔮 Portal URL', 'callback_data' => 'cat_portal')
-        ),
-        // Row 4: Problems
-        array(
-            array('text' => '🛑 Buffering', 'callback_data' => 'cat_buffering'),
-            array('text' => '📡 Channels Down', 'callback_data' => 'cat_channels')
-        ),
-        // Row 5: Account
-        array(
-            array('text' => '🔄 Renew', 'callback_data' => 'cat_renew'),
-            array('text' => '🔐 Login Issues', 'callback_data' => 'cat_login')
-        ),
-        // Row 6: Support
-        array(
-            array('text' => '📞 Contact Support', 'callback_data' => 'cat_support')
-        )
-    );
-    
-    sendKeyboard($chatId, $text, $keyboard, $botToken);
+    sendMessage($chatId, $text, $botToken);
 }
 
 /**
