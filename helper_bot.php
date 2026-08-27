@@ -65,8 +65,8 @@ function showMainMenu($chatId, $botToken) {
         "💰 *Add Funds* - say 'add funds'\n" .
         "📱 *Firestick* - say 'firestick'\n" .
         "📱 *Android* - say 'android'\n" .
-        "📋 *M3U List* - say 'm3u'\n" .
         "🔮 *Portal* - say 'portal'\n" .
+        "🔗 *Link Telegram* - say 'link telegram'\n" .
         "🛑 *Buffering* - say 'buffering'\n" .
         "📡 *Channels* - say 'channels down'\n" .
         "🔄 *Renew* - say 'renew'\n" .
@@ -150,8 +150,8 @@ function handleCallback($callback, $botToken, $faq) {
         'cat_addfunds' => 'add_funds',
         'cat_firestick' => 'firestick',
         'cat_android' => 'android',
-        'cat_m3u' => 'm3u',
         'cat_portal' => 'portal',
+        'cat_link_telegram' => 'link_telegram',
         'cat_buffering' => 'buffering',
         'cat_channels' => 'channels_not_working',
         'cat_no_streams' => 'no_streams',
