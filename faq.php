@@ -10,8 +10,8 @@ return array(
     // ============================================
     'how_to_pay' => array(
         'title' => '💳 How to Pay',
-        'keywords' => array('pay', 'payment', 'buy', 'bitcoin', 'btc', 'paypal', 'cashapp', 'venmo', 'how to pay', 'cash app'),
-        'answer' => "💳 *How to Pay*\n\n*On our website:*\n• Bitcoin (BTC)\n• Bitcoin Cash (BCH)\n\n*For credits via Shopify:*\n• Credit/Debit card\n• PayPal\n• Venmo\n• Google Pay\n\n⚠️ *IMPORTANT - Bitcoin Payments:*\n• ALWAYS send the BTC amount shown on your invoice\n• Do NOT send the USD amount\n• Sending the wrong amount causes short payments\n\nVisit https://veilhosts.shop/plans"
+        'keywords' => array('pay', 'payment', 'buy', 'bitcoin', 'btc', 'paypal', 'cashapp', 'venmo', 'how to pay', 'cash app', 'bch'),
+        'answer' => "💳 *How to Pay*\n\n*On our website:*\n• Bitcoin (BTC)\n• Bitcoin Cash (BCH)\n\n⚠️ *IMPORTANT - Bitcoin Payments:*\n• ALWAYS send the BTC or BCH amount shown on your invoice\n• Do NOT send the USD amount\n• Sending the wrong amount causes short payments\n\n*Purchase Veil Hosts credits via Shopify:*\n• Credit/Debit card\n• PayPal\n• Venmo\n• Google Pay\n\nSend a message here to @savagestreamstv\n\n👉 https://veilhosts.shop/plans"
     ),
     
     'shopify_credits' => array(
@@ -21,42 +21,30 @@ return array(
     ),
     
     'add_funds' => array(
-        'title' => '💰 Add Funds',
+        'title' => '💰 Adding Funds',
         'keywords' => array('add funds', 'credit', 'top up', 'balance', 'add funds to account'),
-        'answer' => "💰 *Adding Funds*\n\n1. Log into your client area\n2. Go to 'Add Funds'\n3. Enter amount and pay\n4. Credit added automatically\n\n👉 https://veilhosts.shop/plans/clientarea.php?action=addfunds"
+        'answer' => "💰 *Adding Funds*\n\n*Using BTC or BCH:*\n1. Log into your client area\n2. Go to 'Add Funds'\n3. Enter amount and pay\n4. Credit added automatically\n👉 https://veilhosts.shop/plans/clientarea.php?action=addfunds\n\n*Purchase Veil Hosts credits via Shopify:*\n• Credit/Debit card\n• PayPal\n• Venmo\n• Google Pay\n\nSend a message here to @savagestreamstv"
     ),
     
     // ============================================
     // SETUP - 📱
     // ============================================
     'firestick' => array(
-        'title' => '📱 Firestick Setup (Savage 4OUR)',
+        'title' => '📱 Firestick Setup - Savage 4OUR App',
         'keywords' => array('firestick', 'firetv', 'amazon', 'stick', 'setup', 'install', 'app', 'fire stick', 'fire tv'),
-        'answer' => "📱 *Firestick Setup - Savage 4OUR App*\n\n*Step 1:* Download the app\n1. Download 'Downloader' from Amazon App Store\n2. Enable 'Install from unknown sources'\n3. Open Downloader, enter code: *727397*\n4. Install Savage 4OUR\n\n*Step 2:* Configure\n• Service Name: e.g., 'Bones IPTV'\n• Username: Your service username\n• Password: Your service password\n\n*Add multiple services:* Click 'Service name' → 'Add Playlist'\n\n*Full guides:* https://veilhosts.shop/plans/index.php?rp=/knowledgebase/26/"
+        'answer' => "📱 *Firestick Setup - Savage 4OUR App*\n\n*Step 1: How to enable Developer Options on Fire OS*\n• Open the Settings gear on the Home screen\n• Select My Fire TV (or Device & Software on some TVs)\n• Open About\n• Highlight the first row showing your Fire TV's name\n• Press the remote's center/select button seven times\n• Wait for the message confirming you are already a developer\n• Go back one screen - Developer Options is now visible\n• Enable \"Apps From Unknown Sources\"\n\n*Step 2:* Install Downloader from the App Store\n*Step 3:* Open Downloader, enter code: 727397\n*Step 4:* Install Savage 4OUR\n\n*Step 5: Configure*\n• Service Name: e.g., 'Bones IPTV'\n• Username: Your service username\n• Password: Your service password\n\n*Add multiple services:* Click 'Service name' → 'Add Playlist'\n\n*Full guides:* https://veilhosts.shop/plans/index.php?rp=/knowledgebase/26/"
     ),
     
     'android' => array(
-        'title' => '📱 Android TV Setup',
+        'title' => '📱 Android TV Setup - Savage 4OUR App',
         'keywords' => array('android', 'tv', 'apk', 'smart tv', 'setup', 'install'),
-        'answer' => "📱 *Android TV Setup*\n\n*Method 1 (Recommended):*\n1. Download 'Downloader' from Play Store\n2. Enter code: *727397*\n3. Install Savage 4OUR\n4. Login with credentials\n\n*Method 2 - Direct APK:*\n1. Download from veilhosts.shop\n2. Enable 'Install from unknown sources'\n3. Install and login\n\n*Configure:* Service Name, Username, Password\n\n*Full guides:* https://veilhosts.shop/plans/index.php?rp=/knowledgebase/26/"
-    ),
-    
-    'android' => array(
-        'title' => '📱 Android TV Setup',
-        'keywords' => array('android', 'tv', 'apk', 'smart tv', 'setup', 'install'),
-        'answer' => "📱 *Android TV Setup*\n\n1. Go to 'Add Funds' in client area\n2. Buy subscription\n3. Download our APK or search 'VeilHosts' in Play Store\n4. Install, login, watch!"
-    ),
-    
-    'm3u' => array(
-        'title' => '📋 M3U List',
-        'keywords' => array('m3u', 'playlist', 'url', 'link', 'download', 'm3u8'),
-        'answer' => "📋 *M3U List*\n\nYour M3U URL:\n1. Login at veilhosts.shop/plans\n2. Go to 'Services'\n3. Click on your subscription\n4. Copy the M3U URL\n\nUse any M3U-compatible player."
+        'answer' => "📱 *Android TV Setup - Savage 4OUR App*\n\n*Step 1:* Install Downloader from the Play Store\n*Step 2:* Open Downloader, enter code: 727397\n*Step 3:* When trying to install you will likely get a warning that you can't install this unknown app. It will give you the option to open the menu. Turn on the Downloader app's ability to install from unknown sources\n*Step 4:* Go back into Downloader and install the Savage 4OUR App\n*Step 5: Configure*\n• Service Name: e.g., 'Bones IPTV'\n• Username: Your service username\n• Password: Your service password\n\n*Add multiple services:* Click 'Service name' → 'Add Playlist'\n\n*Full guides:* https://veilhosts.shop/plans/index.php?rp=/knowledgebase/26/"
     ),
     
     'portal' => array(
-        'title' => '🔮 Portal URL',
+        'title' => '🔮 Portal URLs',
         'keywords' => array('portal', 'mag', 'server', 'url'),
-        'answer' => "🔮 *Portal/MAG Setup*\n\nYour portal URL:\n1. Login at veilhosts.shop/plans\n2. Go to 'Services' \n3. Click on subscription\n4. Copy Portal URL\n\nEnter in your MAG device settings."
+        'answer' => "🔮 *Portal URLs*\n\n*Savage Portal:* http://svg.pm:25461\n*Bones Portal:* https://itchyanus.hair\n*StreamHub URL:* http://mirror.streamhubtv.ca:8080\n*Titanium URL:* https://rocktheusa.jktvsupervod.cc"
     ),
     
     'login_issue' => array(
@@ -75,9 +63,9 @@ return array(
     // ISSUES - 🔧
     // ============================================
     'buffering' => array(
-        'title' => '🛑 Buffering Fix',
+        'title' => '🛑 Buffering Fixes',
         'keywords' => array('buffer', 'buffering', 'slow', 'lag', 'loading', 'keeps stopping', 'stuttering', 'video freezing'),
-        'answer' => "🛑 *Buffering Fixes*\n\n*Try these steps:*\n1. *Restart your modem, router, and streaming device*\n2. *Run a speed test* - need good internet\n3. *Try a VPN* - some ISPs throttle streaming\n4. *Lower stream quality* (720p vs 1080p)\n5. *Use wired Ethernet* instead of WiFi\n6. *Close other apps* using internet\n\nIf buffering persists, let us know what you've tried!"
+        'answer' => "🛑 *Buffering Fixes*\n\n*Try these steps:*\n1. Restart your modem, router, and streaming device\n2. Run a speed test - need good internet\n3. Try a VPN - some ISPs throttle streaming\n4. Disable any advanced security features on your router using your ISP app\n5. Use wired Ethernet instead of WiFi\n6. Close other apps using internet\n7. We recommend purchasing your own modem/routers instead of renting from the ISP\n\nIf buffering persists, let us know what you've tried!"
     ),
     
     'internet_speed' => array(
@@ -93,15 +81,9 @@ return array(
     ),
     
     'no_streams' => array(
-        'title' => '📺 No Streams / Expired',
+        'title' => '📺 No Streams Available',
         'keywords' => array('no streams', 'expired', 'expire', 'renew', 'no channels', 'nothing working', 'cant watch'),
-        'answer' => "📺 *No Streams / Expired*\n\n1. Check 'Services' in client area - is subscription active?\n2. Check the expiry date\n3. Make sure you have credits/funds\n4. Try logging out and back in\n\n*If expired:* Simply don't renew - service continues until end of paid period."
-    ),
-    
-    'no_streams' => array(
-        'title' => '📺 No Streams / Expired',
-        'keywords' => array('no streams', 'expired', 'expire', 'renew', 'no channels'),
-        'answer' => "📺 *No Streams Available*\n\n1. Check 'Services' in client area - is your subscription active?\n2. Check the expiry date\n3. Make sure you have credits/funds\n4. Try logging out and back in\n\nIf expired, renew in client area!"
+        'answer' => "📺 *No Streams Available*\n\n1. Do the basic math of when you ordered to now to determine if you may be expired\n2. Check the expiry date in your app\n3. Check other apps on your device to see if you have an internet connection\n4. Check the group for similar complaints to see if the service may be down\n\nIf expired, renew in client area!"
     ),
     
     // ============================================
