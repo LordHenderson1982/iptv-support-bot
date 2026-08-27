@@ -47,6 +47,12 @@ return array(
         'answer' => "🔮 *Portal URLs*\n\n*Savage Portal:* http://svg.pm:25461\n*Bones Portal:* https://itchyanus.hair\n*StreamHub URL:* http://mirror.streamhubtv.ca:8080\n*Titanium URL:* https://rocktheusa.jktvsupervod.cc"
     ),
     
+    'link_telegram' => array(
+        'title' => '🔗 Link Telegram to Your Account',
+        'keywords' => array('link telegram', 'connect telegram', 'telegram bot', 'link account', 'telegram account'),
+        'answer' => "🔗 *Link Telegram to Your Account*\n\n1. Log in to your Veil Hosts client area and scroll to the bottom\n2. On the bottom left of the page you will see 'Connect Telegram' - Click It\n3. You will see a yellow box with 'link_[random_token]' - Copy this\n4. Click 'Open Telegram Bot' or in Telegram search @vh_store_bot\n5. Paste the link you copied in the chat with the bot\n6. You should see a notification that says you're linked"
+    ),
+    
     'login_issue' => array(
         'title' => '🔐 Login Problems',
         'keywords' => array('login', 'password', 'cant login', 'not working', 'username', 'forgot password', 'forgot', 'cant log in', 'locked out', 'account locked'),
