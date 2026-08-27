@@ -194,11 +194,6 @@ return array(
         'answer' => "📺 *Smart TV Setup*\n\nSmart TVs need a 3rd party IPTV app.\n\n*Recommended:* **Hot IPTV Player**\n• Works on Samsung, LG, Roku\n• We sell licenses - ask in this group!\n\n*Alternative:* Smarters Pro (watch for copycat apps)"
     ),
     
-    'm3u_vs_portal' => array(
-        'title' => '🔧 M3U vs Portal vs Xtream API',
-        'keywords' => array('m3u', 'portal', 'xtream', 'api', 'difference'),
-        'answer' => "🔧 *M3U vs Portal vs Xtream API*\n\n*Don't worry — Savage 4OUR handles all of this!*\n\n*M3U:* File/link with credentials. Works but can be clunky.\n\n*Portal:* Login address for Xtream API.\n\n*Xtream API:* Modern method — what Savage 4OUR uses.\n\n*Bottom line:* Use Savage 4OUR app and don't worry about the tech stuff!"
-    ),
     
     'vpn' => array(
         'title' => '🔐 Using a VPN',
